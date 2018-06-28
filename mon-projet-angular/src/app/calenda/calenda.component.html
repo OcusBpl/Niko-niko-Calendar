@@ -1,0 +1,23 @@
+<app-mwl-demo-component></app-mwl-demo-component>
+
+<div class="row">
+  <div class="col-xs-12">
+    <h2>Vos Event</h2>
+    <div class="list-group">
+      <button
+        class="list-group-item"
+        *ngFor="let event of eventss; let i = index"
+        >
+        <h3 class="list-group-item-heading">
+          {{ event.couleur }}
+          <button class="btn btn-default pull-right" >
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+        </h3>
+        <p class="list-group-item-text">{{ event.date }}</p>
+        <p class="list-group-item-text">{{ event.description }}</p>
+      </button>
+    </div>
+    <button class="btn btn-primary" (click)="onNewEvent()">Nouveau Event</button>
+  </div>
+</div>
