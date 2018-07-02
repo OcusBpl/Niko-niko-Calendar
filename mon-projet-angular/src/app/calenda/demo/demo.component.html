@@ -1,3 +1,4 @@
+
 <div class="row text-center">
   <div class="col-md-4">
     <div class="btn-group">
@@ -92,4 +93,23 @@
   </button>
   <div class="clearfix"></div>
 </h3>
+
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2">
+    <h2>Enregistrer un nouveau Event</h2>
+    <form [formGroup]="calForm" (ngSubmit)="addEvent()">
+      <div class="form-group">
+        <label for="title">Couleur</label>
+        <input type="text" id="title"
+               class="form-control" formControlName="title">
+      </div>
+
+
+      <button class="btn btn-success" [disabled]="calForm.invalid"
+              type="submit">Enregistrer
+      </button>
+
+    </form>
+  </div>
+</div>
 

@@ -2,7 +2,7 @@ import {
   Component,
   ChangeDetectionStrategy,
   ViewChild,
-  TemplateRef
+  TemplateRef, OnInit
 } from '@angular/core';
 import {
   startOfDay,
@@ -22,9 +22,8 @@ import {
   CalendarEventTimesChangedEvent
 } from 'angular-calendar';
 import * as firebase from 'firebase';
-import * as $ from 'jquery';
 import DataSnapshot = firebase.database.DataSnapshot;
-import {Calenda} from '../../models/Calenda.model';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 const colors: any = {
   red: {
@@ -47,19 +46,14 @@ const colors: any = {
   templateUrl: './demo.component.html',
   styleUrls: ['./demo.component.scss']
 })
-export class DemoComponent {
+export class DemoComponent implements OnInit {
 
-  ngOnInit() {
-    this.eventsSubscription = this.eventsSubject.subscribe((events: CalendarEvent[]) => {
-      this.events = events;
-    });
-    this.getEvents();
-    this.emitEvents();
-  }
+
 
   @ViewChild('modalContent') modalContent: TemplateRef<any>;
 
   view = 'month';
+  calForm: FormGroup;
 
   viewDate: Date = new Date();
 
@@ -92,7 +86,23 @@ export class DemoComponent {
 
   activeDayIsOpen = true;
 
-  constructor(private modal: NgbModal) {}
+  constructor(private modal: NgbModal,
+              private formBuilder: FormBuilder) {}
+
+  ngOnInit() {
+    this.initForm();
+    this.eventsSubscription = this.eventsSubject.subscribe((events: CalendarEvent[]) => {
+      this.events = events;
+    });
+    this.getEvents();
+    this.emitEvents();
+  }
+
+  initForm() {
+    this.calForm = this.formBuilder.group({
+      title: ['', Validators.required]
+    });
+  }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
@@ -124,7 +134,7 @@ export class DemoComponent {
     this.modal.open(this.modalContent, { size: 'lg' });
   }
 
-  addEvent(): void {
+  /*addEvent(): void {
     this.events.push({
       title: 'New eventssss',
       start: startOfDay(new Date()),
@@ -136,9 +146,25 @@ export class DemoComponent {
         afterEnd: true
       }
     });
-    this.saveEvents();
+    this.refresh.next();
+  }*/
+  addEvent() {
+    const title = this.calForm.get('title').value;
+    this.events.push({
+      title: title,
+      start: startOfDay(new Date()),
+      end: endOfDay(new Date()),
+      color: colors.red,
+      draggable: true,
+      resizable: {
+        beforeStart: true,
+        afterEnd: true
+      }
+    });
     this.refresh.next();
   }
+
+
 
   emitEvents() {
     this.eventsSubject.next(this.events);
@@ -157,4 +183,4 @@ export class DemoComponent {
 }
 
 
-}
+
